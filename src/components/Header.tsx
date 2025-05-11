@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Menu, X } from 'lucide-react' // Lucide for icons, or use your own
 
 const mainNav = [
   { name: 'Home', href: '/' },
@@ -18,6 +20,7 @@ const entityNav = [
 
 export default function Header() {
   const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const getLinkStyle = (href: string) =>
     pathname === href
@@ -27,9 +30,19 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 bg-[#001a33] text-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <h1 className="text-2xl font-bold text-yellow-400">AFES</h1>
+        <div className="flex justify-between items-center w-full md:w-auto">
+          <h1 className="text-2xl font-bold text-yellow-400">AFES</h1>
+          <button
+            className="md:hidden text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
 
-        <nav className="flex flex-wrap gap-4">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex flex-wrap gap-4">
           {mainNav.map((link) => (
             <Link
               key={link.href}
@@ -39,9 +52,9 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
-        </nav>
+        </div>
 
-        <nav className="flex flex-wrap gap-4">
+        <div className="hidden md:flex flex-wrap gap-4">
           {entityNav.map((link) => (
             <Link
               key={link.href}
@@ -51,7 +64,23 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
-        </nav>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden flex flex-col gap-4 mt-4">
+            {[...mainNav, ...entityNav].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={getLinkStyle(link.href)}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </header>
   )

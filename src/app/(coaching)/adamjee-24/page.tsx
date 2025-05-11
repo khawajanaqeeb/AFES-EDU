@@ -4,8 +4,11 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
+
+
 export default function Adamjee24() {
   const [showScroll, setShowScroll] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setShowScroll(window.scrollY > 300)
@@ -237,7 +240,7 @@ export default function Adamjee24() {
           {images.map((src, idx) => (
             <div
               key={idx}
-              className="relative w-[400px] h-[300px] flex-shrink-0 rounded shadow overflow-hidden"
+              className="relative w-[250px] sm:w-[300px] md:w-[400px] h-[250px] sm:h-[280px] md:h-[300px] flex-shrink-0 rounded shadow overflow-hidden"
             >
               <Image
                 src={`/${src}`}
@@ -269,7 +272,7 @@ export default function Adamjee24() {
   return (
     <main className="bg-gray-100 text-gray-800">
       {/* Top Section */}
-      <section className="flex items-center p-6 bg-[#040651] text-[#fff500]">
+      <section className="flex flex-col md:flex-row items-center gap-4 p-4 sm:p-6 bg-[#040651] text-[#fff500] text-center md:text-left">
         <Image
           src="/a-logo.jfif"
           alt="Adamjee Logo"
@@ -284,20 +287,52 @@ export default function Adamjee24() {
       </section>
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-gray-500 shadow-md p-3 flex gap-4 justify-center text-white font-semibold">
-        {sectionContent.map(({ id }) => (
-          <button
-            key={id}
-            className="hover:text-yellow-500 transition"
-            onClick={() => scrollToSection(id)}
-          >
-            {id.replace(/-/g, ' ').toUpperCase()}
-          </button>
-        ))}
-      </nav>
+      <nav className="sticky top-0 z-50 bg-gray-500 shadow-md p-3 text-white font-semibold">
+  <div className="flex justify-between items-center">
+    {/* Burger Icon */}
+    <button
+      className="md:hidden text-white text-2xl"
+      onClick={() => setMobileMenuOpen(prev => !prev)}
+    >
+      ☰
+    </button>
+
+    {/* Desktop Menu */}
+    <div className="hidden md:flex gap-4 justify-center flex-grow">
+      {sectionContent.map(({ id }) => (
+        <button
+          key={id}
+          className="hover:text-yellow-500 transition"
+          onClick={() => scrollToSection(id)}
+        >
+          {id.replace(/-/g, ' ').toUpperCase()}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  {/* Mobile Dropdown */}
+  {mobileMenuOpen && (
+    <div className="flex flex-col mt-2 md:hidden gap-2">
+      {sectionContent.map(({ id }) => (
+        <button
+          key={id}
+          className="hover:text-yellow-400 px-2 text-left"
+          onClick={() => {
+            scrollToSection(id)
+            setMobileMenuOpen(false)
+          }}
+        >
+          {id.replace(/-/g, ' ').toUpperCase()}
+        </button>
+      ))}
+    </div>
+  )}
+</nav>
+
 
       {/* Sections */}
-      <div className="space-y-12 p-6 max-w-5xl mx-auto">
+      <div className="space-y-12 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl mx-auto">
       {sectionContent.map(({ id, title, content }) => (
 
           <motion.section
@@ -306,10 +341,10 @@ export default function Adamjee24() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="p-6 rounded-2xl shadow-lg border border-gray-200 bg-white"
+            className="p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200 bg-white"
           >
-            <h2 className="text-2xl font-bold text-[#040651] mb-2">{title}</h2>
-            <p className="text-black whitespace-pre-line">{content}</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#040651] mb-2">{title}</h2>
+            <p className="text-sm sm:text-base text-black whitespace-pre-line">{content}</p>
             {imageGallery(id)}
           </motion.section>
         ))}

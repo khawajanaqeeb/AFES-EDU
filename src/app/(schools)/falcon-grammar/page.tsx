@@ -3,9 +3,11 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
 
 export default function FalconGrammarPage() {
   const [showScroll, setShowScroll] = useState(false)
+  const [showMenu, setShowMenu] = useState(false) 
 
   useEffect(() => {
     const handleScroll = () => setShowScroll(window.scrollY > 300)
@@ -184,77 +186,124 @@ Through PTMs, we reinforce the importance of collaboration, creating a community
 
   return (
     <main className="bg-white text-gray-800">
-      {/* Top Section */}
-      <section className="flex items-center p-6 bg-[#800000] text-white">
-        <Image
-          src="/falconlogo.jpg"
-          alt="Falcon Grammar School Logo"
-          width={80}
-          height={80}
-          className="mr-4 rounded-full"
-        />
-        <div>
-          <h1 className="text-3xl font-bold">Falcon Grammar School</h1>
-          <p className="text-sm italic">Building Better Personalities Since 1984</p>
-        </div>
-      </section>
+  {/* Top Section */}
+  <section className="flex flex-col sm:flex-row items-center p-12 sm:p-6 bg-[#800000] text-white">
+    <Image
+      src="/falconlogo.jpg"
+      alt="Falcon Grammar School Logo"
+      width={80}
+      height={80}
+      className="mr-4 rounded-full mb-4 sm:mb-0"
+    />
+    <div>
+      <h1 className="text-3xl sm:text-4xl font-bold">Falcon Grammar School</h1>
+      <p className="text-sm sm:text-base italic">Building Better Personalities Since 1984</p>
+    </div>
+  </section>
 
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white shadow-md p-3 flex gap-4 justify-center text-[#800000] font-semibold">
-        {normalSections.map(({ id }) => (
-          <button
-            key={id}
-            className="hover:text-black transition"
-            onClick={() => scrollToSection(id)}
-          >
-            {id.replace(/-/g, ' ').toUpperCase()}
-          </button>
-        ))}
-        <div className="relative group">
-          <button className="hover:text-black transition">
-            EVENTS ▼
-          </button>
-          <div className="absolute hidden group-hover:block bg-white border shadow mt-1 text-sm w-40">
-            {eventSections.map(({ id }) => (
-              <button
-                key={id}
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                onClick={() => scrollToSection(id)}
-              >
-                {id.replace(/-/g, ' ').toUpperCase()}
-              </button>
-            ))}
-          </div>
-        </div>
-      </nav>
-
-      {/* Sections */}
-      <div className="space-y-12 p-6 max-w-5xl mx-auto">
-        {[...normalSections, ...eventSections].map(({ id, title, content }) => (
-          <motion.section
-            key={id}
-            id={id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="p-6 rounded-2xl shadow-lg border border-gray-200 bg-white"
-          >
-            <h2 className="text-2xl font-bold text-[#800000] mb-2">{title}</h2>
-            <p className="text-black whitespace-pre-line">{content}</p>
-            {imageGallery(id)}
-          </motion.section>
-        ))}
-      </div>
-
-      {/* Scroll to Top */}
-      {showScroll && (
+  {/* Responsive Navbar */}
+<nav className="sticky top-0 z-50 bg-white shadow-md text-[#800000] font-semibold">
+  <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <h1 className="text-lg font-bold">Falcon Grammar School</h1>
+    <button
+      className="sm:hidden"
+      onClick={() => setShowMenu(prev => !prev)}
+      aria-label="Toggle menu"
+    >
+      {showMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+    </button>
+    <div className="hidden sm:flex gap-4 items-center">
+      {normalSections.map(({ id }) => (
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 bg-[#800000] text-white p-3 rounded-full shadow-lg hover:bg-red-800 transition"
+          key={id}
+          className="hover:text-black transition"
+          onClick={() => scrollToSection(id)}
         >
-          ↑
+          {id.replace(/-/g, ' ').toUpperCase()}
         </button>
-      )}
-    </main>
+      ))}
+      <div className="relative group">
+        <button className="hover:text-black transition">EVENTS ▼</button>
+        <div className="absolute hidden group-hover:block bg-white border shadow mt-1 text-sm w-40">
+          {eventSections.map(({ id }) => (
+            <button
+              key={id}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              onClick={() => scrollToSection(id)}
+            >
+              {id.replace(/-/g, ' ').toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Mobile Menu */}
+  {showMenu && (
+    <div className="sm:hidden px-4 pb-4 flex flex-col gap-2 border-t">
+      {normalSections.map(({ id }) => (
+        <button
+          key={id}
+          className="text-left hover:text-black transition"
+          onClick={() => {
+            scrollToSection(id)
+            setShowMenu(false)
+          }}
+        >
+          {id.replace(/-/g, ' ').toUpperCase()}
+        </button>
+      ))}
+      <details className="text-left">
+        <summary className="cursor-pointer text-[#800000]">EVENTS</summary>
+        <div className="pl-4 mt-1 flex flex-col gap-1">
+          {eventSections.map(({ id }) => (
+            <button
+              key={id}
+              className="text-left text-sm hover:text-black"
+              onClick={() => {
+                scrollToSection(id)
+                setShowMenu(false)
+              }}
+            >
+              {id.replace(/-/g, ' ').toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </details>
+    </div>
+  )}
+</nav>
+
+
+  {/* Sections */}
+  <div className="space-y-12 p-6 max-w-5xl mx-auto">
+    {[...normalSections, ...eventSections].map(({ id, title, content }) => (
+      <motion.section
+        key={id}
+        id={id}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="p-6 rounded-2xl shadow-lg border border-gray-200 bg-white"
+      >
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#800000] mb-2">{title}</h2>
+        <p className="text-black whitespace-pre-line">{content}</p>
+        {imageGallery(id)}
+      </motion.section>
+    ))}
+  </div>
+
+  {/* Scroll to Top */}
+  {showScroll && (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className="fixed bottom-6 right-6 bg-[#800000] text-white p-3 rounded-full shadow-lg hover:bg-red-800 transition"
+    >
+      ↑
+    </button>
+  )}
+</main>
+
   )
 }
